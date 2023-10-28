@@ -21,9 +21,23 @@ module.exports = {
             res.status(400).json('An error occured during registration.');
         }
     },
-    getAdmin: async (req, res) => {
-        console.log(req);
-        const admin = req.body;
-        console.log(admin); 
+    getAdminByEmail: async (req, res) => {
+        try {
+            const email = req.params.email; 
+            console.log(email);
+            if (!email) {
+                return res.status(400).json({ error: 'Admin email is required.' });
+            }
+            const admin = await Admin.findOne({ email });
+
+            if (!admin) {
+                return res.status(404).json({ error: 'Admin not found.' });
+            }
+
+            res.json(admin);
+        } catch (err) {
+            console.log(err);
+            res.status(500).json('An error occurred while fetching admin information.');
+        }
     },
 };
